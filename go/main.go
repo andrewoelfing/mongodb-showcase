@@ -20,7 +20,7 @@ type Lead struct {
 func main() {
 
 	// init from a file
-	props := properties.MustLoadFile("config.properties", properties.UTF8)
+	props := properties.MustLoadFile("application.properties", properties.UTF8)
 	// get values through getters
 	mongodburi := props.MustGetString("mongodb.uri")
 
@@ -44,17 +44,17 @@ func main() {
 	// Drop everything
 	collection.Drop(context.TODO())
 
-	// Some data to add to the Database
+	// Some data to add to the Database 
 	insertData(collection)
 
 	// Read all leads from database and iterates
 	readAll(collection)
 
-	// Update a document
-	updateDocument(collection)
-
 	// Find a single document
 	findSingleDocument(collection)
+
+	// Update a document
+	updateDocument(collection)
 
 	// delete a document
 	deleteDocument(collection)
