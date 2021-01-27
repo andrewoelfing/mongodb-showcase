@@ -11,6 +11,6 @@ public interface LeadRepository extends MongoRepository<Lead, String> {
     public List<Lead> findByLastName(String lastName);
 
     @Query("{seniority : {$gt : ?0}}")
-    public List<Lead> findByLongerEmployedThen(int seniority);
+    public List<Lead> findByLongerEmployedThan(int seniority);
 
 }

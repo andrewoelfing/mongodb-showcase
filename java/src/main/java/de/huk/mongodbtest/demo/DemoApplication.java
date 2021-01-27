@@ -60,8 +60,8 @@ public class DemoApplication implements CommandLineRunner {
 		// find Lead by seniority 
 		System.out.println("Find Leads longer employed then:");
 		System.out.println("-------------------------------");
-		List<Lead> leadsBySeniority = repository.findByLongerEmployedThen(10);
-		leadsBySeniority.forEach(lead -> System.out.printf("Leads employed more then %s years: %s\r\n", lead.getSeniority(), lead));
+		List<Lead> leadsBySeniority = repository.findByLongerEmployedThan(10);
+		leadsBySeniority.forEach(lead -> System.out.printf("Leads employed more than %s years: %s\r\n", lead.getSeniority(), lead));
 		
 		// Delete a single Lead
 		System.out.println("Delete Lead with findOne(byExample):");
