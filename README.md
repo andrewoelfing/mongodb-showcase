@@ -33,6 +33,12 @@ cd java
 JAVA_TOOL_OPTIONS=-Djdk.tls.client.protocols=TLSv1.2 ./gradlew build bootRun
 ```
 
+Oder in Windows:
+```
+cd java
+set JAVA_TOOL_OPTIONS=-Djdk.tls.client.protocols=TLSv1.2 && gradlew.bat build bootrun
+```
+
 <a name="go"></a>
 ## Go
 
