@@ -15,6 +15,7 @@ import (
 type Lead struct {
 	FirstName string
 	LastName  string
+	Seniority int
 }
 
 func main() {
@@ -44,7 +45,7 @@ func main() {
 	// Drop everything
 	collection.Drop(context.TODO())
 
-	// Some data to add to the Database 
+	// Some data to add to the Database
 	insertData(collection)
 
 	// Read all leads from database and iterates
@@ -70,12 +71,12 @@ func main() {
 }
 
 func insertData(collection *mongo.Collection) {
-	collection.InsertOne(context.TODO(), Lead{"Udo", "Peter"})
-	collection.InsertOne(context.TODO(), Lead{"Christian", "Deinlein"})
-	collection.InsertOne(context.TODO(), Lead{"Peter", "Witoschek"})
-	collection.InsertOne(context.TODO(), Lead{"Philipp", "Bachmann"})
-	collection.InsertOne(context.TODO(), Lead{"Dennis", "Peetz"})
-	collection.InsertOne(context.TODO(), Lead{"Lieschen", "Müller"})
+	collection.InsertOne(context.TODO(), Lead{"Udo", "Peter", 25})
+	collection.InsertOne(context.TODO(), Lead{"Christian", "Deinlein", 25})
+	collection.InsertOne(context.TODO(), Lead{"Peter", "Witoschek", 10})
+	collection.InsertOne(context.TODO(), Lead{"Philipp", "Bachmann", 5})
+	collection.InsertOne(context.TODO(), Lead{"Dennis", "Peetz", 10})
+	collection.InsertOne(context.TODO(), Lead{"Lieschen", "Müller", 35})
 }
 
 func readAll(collection *mongo.Collection) {
@@ -85,7 +86,6 @@ func readAll(collection *mongo.Collection) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer findAll.Close(context.Background())
 	for findAll.Next(context.TODO()) {
 		// To decode into a struct, use cursor.Decode()
 		result := Lead{}
@@ -99,13 +99,14 @@ func readAll(collection *mongo.Collection) {
 		// raw := findAll.Current
 		// fmt.Printf("Document: %s\n", raw)
 	}
+	defer findAll.Close(context.Background())
 	fmt.Printf("\n")
 }
 
 func updateDocument(collection *mongo.Collection) {
 	fmt.Printf("Lead found with lastname('Peter'):\n")
 	fmt.Printf("--------------------------------\n")
-	filter := bson.D{{"lastname", "Peter"}}
+	filter := bson.M{"lastname": "Peter"}
 	update := bson.M{
 		"$set": bson.M{
 			"firstname": "Stefan",
@@ -122,7 +123,7 @@ func findSingleDocument(collection *mongo.Collection) {
 
 	fmt.Printf("Lead found with findByFirstName('Udo'):\n")
 	fmt.Printf("--------------------------------\n")
-	filter := bson.D{{"lastname", "Peter"}}
+	filter := bson.M{"lastname": "Peter"}
 	var result Lead
 	err := collection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
@@ -134,12 +135,14 @@ func findSingleDocument(collection *mongo.Collection) {
 func deleteDocument(collection *mongo.Collection) {
 	fmt.Printf("delete Lead with firstname('Lieschen') and lastname('Müller'):\n")
 	fmt.Printf("--------------------------------\n")
-	filter := bson.D{{"$and", []bson.D{
-		bson.D{{"firstname", "Lieschen"}},
-		bson.D{{"lastname", "Müller"}},
-	}}}
+	filter := bson.D{
+		{"$and", []bson.D{
+			{{"firstname", "Lieschen"}},
+			{{"lastname", "Müller"}},
+		},
+		}}
 	deleteResult, deleteError := collection.DeleteOne(context.TODO(), filter)
-	// deleteResult, deleteError = collection.DeleteOne(context.TODO(), Lead{"Lieschen", "Müller"})
+	// deleteResult, deleteError := collection.DeleteOne(context.TODO(), Lead{"Lieschen", "Müller", 35})
 
 	if deleteError != nil {
 		log.Fatal(deleteError)
